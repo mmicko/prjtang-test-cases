@@ -1,0 +1,24 @@
+# Files produced by TD
+*.log
+*_ys.v
+*_synth.v
+*_tdroute.v
+*.bit
+*.rep
+*.pnl
+*.tcl
+# nextpnr
+*.txt
+*.json
+# Setup file
+environment.sh
+# Post pnr verilog
+*_pnr.v
+*_ys.v
+# EQY
+*.eqy
+*.pyc
+check_yosys/
+check_pnr/
+check_pnr_post/
+

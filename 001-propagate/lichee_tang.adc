@@ -1,0 +1,2 @@
+set_pin_assignment {rst} { LOCATION = K16; }    # USR_KEY
+set_pin_assignment {led} { LOCATION = P13; }    # LED_G, active low

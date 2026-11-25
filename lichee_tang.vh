@@ -1,0 +1,2 @@
+`define BOARD_FREQ_STR "24.0"
+`define BOARD_FREQ 24000000
