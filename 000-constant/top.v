@@ -1,5 +1,5 @@
 module top (
-    output wire [2:0] led
+    output wire led
 );
-    assign led = 3'b011;
+    assign led = 1'b0;
 endmodule

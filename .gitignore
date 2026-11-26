@@ -1,8 +1,13 @@
+# top level
+__pycache__
+logs/
 # Files produced by TD
 *.log
 *_ys.v
 *_synth.v
 *_tdroute.v
+pack.v
+pack.area
 *.bit
 *.rep
 *.pnl
@@ -21,4 +26,3 @@ environment.sh
 check_yosys/
 check_pnr/
 check_pnr_post/
-

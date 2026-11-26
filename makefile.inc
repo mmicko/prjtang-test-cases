@@ -76,7 +76,7 @@ $(TEST_CASE).json $(TEST_CASE)_ys.v: ../$(BOARD).vh $(VERILOG_FILES)
 
 $(TEST_CASE)_$(BOARD).tcl:
 	@echo 'import_device $(FPGA).db -package $(PACKAGE)' > $@
-	@echo 'read_verilog $(TEST_CASE)_synth.v:' >> $@
+	@echo 'read_verilog $(TEST_CASE)_synth.v' >> $@
 	@echo 'read_adc $(BOARD).adc' >> $@
 	@echo 'optimize_rtl' >> $@
 	@echo 'optimize_gate' >> $@

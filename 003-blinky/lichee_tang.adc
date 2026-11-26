@@ -1,0 +1,2 @@
+set_pin_assignment {clk} { LOCATION = K14; }    # CLK_IN 24 MHz
+set_pin_assignment {led} { LOCATION = P13; }    # LED_G, active low
