@@ -54,7 +54,7 @@ NEXTPNR_PARAMS ?=
 all:
 	@echo "Use one of targets for '$(BOARD)' board:"
 	@echo " - synth - running Yosys synthesys only"
-	@echo " - pr - Yosys + td"
+	@echo " - td - Yosys + td"
 	@echo " - unpack - Unpack td bitstream"
 	@echo " - jtag_td - programming bitstream produced by td"
 	@echo " - json - Yosys for nextpnr"
@@ -84,9 +84,9 @@ $(TEST_CASE)_$(BOARD).tcl:
 	@echo 'place' >> $@
 	@echo 'route' >> $@
 	@echo 'write_pnl $(TEST_CASE)_$(BOARD).pnl' >> $@
-	@echo 'bitgen -bit "$(TEST_CASE)_$(BOARD).bit" -version 0X00 -g ucode:000000000000000000000000 -info -log_file $(TEST_CASE)_$(BOARD).rep' >> $@
+	@echo 'bitgen -bit "$(TEST_CASE)_$(BOARD)_td.bit" -version 0X00 -g ucode:000000000000000000000000 -info -log_file $(TEST_CASE)_$(BOARD).rep' >> $@
 
-$(TEST_CASE)_$(BOARD).bit: $(TEST_CASE)_synth.v $(BOARD).adc $(TEST_CASE)_$(BOARD).tcl
+$(TEST_CASE)_$(BOARD)_td.bit: $(TEST_CASE)_synth.v $(BOARD).adc $(TEST_CASE)_$(BOARD).tcl
 	$(call check_td_tool)
 	@echo "Running TD for '$(BOARD)' board"
 	@$(TD_TOOL) $(TEST_CASE)_$(BOARD).tcl > $(TEST_CASE)_$(BOARD).log
@@ -95,11 +95,11 @@ $(TEST_CASE)_$(BOARD).txt $(TEST_CASE)_$(BOARD)_pnr.json: $(TEST_CASE).json $(BO
 	@echo "Running nextpnr for '$(BOARD)' board"
 	$(NEXTPNR) --device $(FPGA) --json $(TEST_CASE).json --vopt ccf=$(BOARD).adc --vopt out=$(TEST_CASE)_$(BOARD).txt --router router2 --freq $(FREQ) $(SEED_OPT) $(SDC_OPT) --write $(TEST_CASE)_$(BOARD)_pnr.json --sdf $(TEST_CASE)_$(BOARD).sdf --placer-heap-beta 0.9 --vopt time_mode=typical $(NEXTPNR_PARAMS)
 
-$(TEST_CASE)_$(BOARD)_td.txt: $(TEST_CASE)_$(BOARD).bit
+$(TEST_CASE)_$(BOARD)_td.txt: $(TEST_CASE)_$(BOARD)_td.bit
 	@echo "Running unpack for '$(BOARD)' board"
-	@$(TANGUNPACK) $(TEST_CASE)_$(BOARD).bit $(TEST_CASE)_$(BOARD)_td.txt
+	@$(TANGUNPACK) $(TEST_CASE)_$(BOARD)_td.bit $(TEST_CASE)_$(BOARD)_td.txt
 
-pr: $(TEST_CASE)_$(BOARD).bit
+td: $(TEST_CASE)_$(BOARD)_td.bit
 
 unpack: $(TEST_CASE)_$(BOARD)_td.txt
 
@@ -107,7 +107,7 @@ nextpnr: $(TEST_CASE)_$(BOARD).txt
 
 post: $(TEST_CASE)_$(BOARD)_pnr.v
 
-jtag_td: $(TEST_CASE)_$(BOARD).bit
+jtag_td: $(TEST_CASE)_$(BOARD)_td.bit
 	@echo "Running openFPGALoader for '$(BOARD)' board"
 	@$(OFL) $(OFL_BOARD) $^
 
@@ -132,7 +132,7 @@ clean:
 force-nextpnr:
 	$(NEXTPNR) --device $(FPGA) --json $(TEST_CASE).json --vopt ccf=$(BOARD).adc --vopt out=../logs/$(TEST_CASE)_$(BOARD)_$(SEED).txt --router router2 --freq $(FREQ) $(SEED_OPT) $(SDC_OPT) --placer-heap-beta 0.9 --vopt time_mode=typical $(NEXTPNR_PARAMS)
 
-.PHONY: synth json pr nextpnr force-nextpnr jtag_td jtag unpack check_yosys check_pnr check_pnr_post
+.PHONY: synth json td nextpnr force-nextpnr jtag_td jtag unpack check_yosys check_pnr check_pnr_post
 
 check_yosys.eqy: $(TEST_CASE)_ys.v ../$(BOARD).vh $(VERILOG_FILES)
 	@echo "Generang EQY file"
